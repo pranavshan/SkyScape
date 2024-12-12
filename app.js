@@ -13,6 +13,7 @@ const listingRouter = require("./routes/listing.js")
 const reviewRouter = require("./routes/review.js")
 const userRouter = require("./routes/user.js")
 const session = require("express-session")
+const MongoStore = require('connect-mongo');
 const flash = require("connect-flash")
 const passport = require("passport")
 const LocalStrategy = require("passport-local")
@@ -20,8 +21,9 @@ const User = require("./models/user.js")
 const favicon = require('serve-favicon');
 app.use(favicon(path.join(__dirname, 'assets', 'b.png')));
 
+const dbUrl = process.env.dbUrl;
 async function main(){
-    await mongoose.connect('mongodb://127.0.0.1:27017/Airnb');
+    await mongoose.connect(dbUrl);
 }
 
 app.set("view engine","ejs");
@@ -40,7 +42,20 @@ main().then(()=>{
     console.log(err);
 })
 
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    crypto :{
+        secret: process.env.secret
+    },
+    touchAfter: 24* 3600,
+})
+
+store.on("error", ()=>{
+    console.log("Error in Mongo Session Store", err)
+})
+
 const sessionOptions = {
+    store:store,
     secret:process.env.secret,
     resave:false,
     saveUninitialized:true,
@@ -49,6 +64,7 @@ const sessionOptions = {
         maxAge:7*24*60*60*1000,
     }
 };
+
 
 app.use(session(sessionOptions));
 app.use(flash());
