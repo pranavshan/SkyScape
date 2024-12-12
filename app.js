@@ -22,8 +22,13 @@ const favicon = require('serve-favicon');
 app.use(favicon(path.join(__dirname, 'assets', 'b.png')));
 
 const dbUrl = process.env.dbUrl;
+// async function main(){
+//     await mongoose.connect(dbUrl);
+// }
 async function main(){
-    await mongoose.connect(dbUrl);
+    mongoose.connect(process.env.dbUrl)
+    .then(() => console.log('Database connected successfully'))
+    .catch((err) => console.error('Database connection error:', err));
 }
 
 app.set("view engine","ejs");
@@ -47,7 +52,7 @@ const store = MongoStore.create({
     crypto :{
         secret: process.env.secret
     },
-    touchAfter: 24* 3600,
+    touchAfter: 24 * 3600,
 })
 
 store.on("error", ()=>{
