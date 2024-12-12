@@ -1,9 +1,13 @@
 const mongoose = require("mongoose");
 const initData = require("./data.js");
 const Listing = require("../models/listing.js");
+if(process.env.NODE_ENV != "production"){
+    require("dotenv").config({ path: "../.env" });
+}
 
+const dbUrl = process.env.dbUrl;
 async function main(){
-    await mongoose.connect('mongodb://127.0.0.1:27017/Airnb');
+    await mongoose.connect(dbUrl);
 }
 
 main().then(()=>{
@@ -16,7 +20,7 @@ main().then(()=>{
 const initDB = async () =>{
     await Listing.deleteMany({});
     console.log(initData.data);
-    initData.data = initData.data.map((obj) => ({...obj, owner:"66dc2191995cc799da9cc330"}));
+    initData.data = initData.data.map((obj) => ({...obj, owner:"675b1d140a77ec5f0ef8a619"}));
     await Listing.insertMany(initData.data);
     console.log("Data was initialized");
 }
