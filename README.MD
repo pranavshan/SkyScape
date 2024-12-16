@@ -99,4 +99,4 @@ Use a platform like Render or Heroku to host your backend.
 Store images on Cloudinary using the credentials in your .env file.
 
 # RENDER LIVE LINK:
-https://connectnow-frontend-4y64.onrender.com
+https://skyscape-d4xc.onrender.com
